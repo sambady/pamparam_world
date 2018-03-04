@@ -27,7 +27,7 @@ class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamer
     private val networkRenderSystem : NetworkHeroRenderSystem
     private val mapHeroIdToEntity = mutableMapOf<Int, Entity>()
 
-    val localHeroController = PamparamWorld.platformResolver.CreateHeroController(worldCamera)
+    val localHeroController = PamparamWorld.platformResolver.CreateHeroController(worldCamera, gamePlay.stage)
     private var localHeroEntity : Entity? = null
 
     init {

@@ -4,5 +4,5 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.scenes.scene2d.Stage
 
 interface IPlatformResolver {
-    fun CreateHeroController(camera: OrthographicCamera) : IHeroController
+    fun CreateHeroController(worldCamera: OrthographicCamera, hudStage: Stage) : IHeroController
 }

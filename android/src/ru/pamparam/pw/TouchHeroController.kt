@@ -1,6 +1,7 @@
 package ru.pamparam.pw
 
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -18,7 +19,8 @@ import ru.pamparam.pw.clientcore.IHeroController
 import ru.pamparam.pw.common.WeaponActionType
 import java.lang.Math.abs
 
-class TouchHeroController(stage : Stage) : ru.pamparam.pw.clientcore.IHeroController(stage), InputProcessor by stage
+class TouchHeroController(worldCamera: OrthographicCamera, hudStage: Stage)
+    : ru.pamparam.pw.clientcore.IHeroController(worldCamera, hudStage), InputProcessor by hudStage
 {
     class StickerPosition(val x : Int = 0, val y : Int = 0)
     private var leftSticker : StickerPosition? = null

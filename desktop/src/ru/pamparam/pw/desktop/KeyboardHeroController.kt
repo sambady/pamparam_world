@@ -12,7 +12,7 @@ import ru.pamparam.pw.clientcore.PamparamWorld
 import ru.pamparam.pw.clientcore.normolizeAngle
 import ru.pamparam.pw.common.WeaponActionType
 
-class KeyboardHeroController(camera : OrthographicCamera) : IHeroController(camera), InputProcessor {
+class KeyboardHeroController(camera : OrthographicCamera, hudStage: Stage) : IHeroController(camera, hudStage), InputProcessor {
     private var pressedW = false
     private var pressedS = false
     private var pressedA = false
@@ -52,7 +52,7 @@ class KeyboardHeroController(camera : OrthographicCamera) : IHeroController(came
 
     override fun getLookRotation(position : Vector2) : Float {
 
-        val mouseWorldPosition = camera.unproject(Vector3(mouseDirection.x, mouseDirection.y, 0f))
+        val mouseWorldPosition = worldCamera.unproject(Vector3(mouseDirection.x, mouseDirection.y, 0f))
 /*
         val tmp = Vector3()
         tmp.set(screenCoords.x, screenCoords.y, 1f)

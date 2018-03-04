@@ -9,7 +9,8 @@ import ru.pamparam.pw.clientcore.IPlatformResolver
 import ru.pamparam.pw.clientcore.PamparamWorld
 
 class PlatformResolverDesktop : IPlatformResolver {
-    override fun CreateHeroController(camera: OrthographicCamera) : IHeroController = KeyboardHeroController(camera)
+    override fun CreateHeroController(worldCamera: OrthographicCamera, hudStage: Stage) : IHeroController =
+            KeyboardHeroController(worldCamera, hudStage)
 }
 
 object DesktopLauncher {

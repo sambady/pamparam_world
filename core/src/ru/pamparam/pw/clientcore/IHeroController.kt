@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ru.pamparam.pw.common.WeaponActionType
 
-abstract class IHeroController(val camera : OrthographicCamera) {
+abstract class IHeroController(val worldCamera : OrthographicCamera, val hudStage: Stage) {
     data class MoveInfo(val moveRotation: Float, val isMove: Boolean)
 
     abstract fun getMoveInfo() : MoveInfo
