@@ -1,0 +1,27 @@
+
+survivor.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+foot
+  rotate: false
+  xy: 196, 34
+  size: 96, 64
+  orig: 96, 64
+  offset: 0, 0
+  index: -1
+leg
+  rotate: false
+  xy: 294, 34
+  size: 96, 64
+  orig: 96, 64
+  offset: 0, 0
+  index: -1
+torso
+  rotate: true
+  xy: 2, 2
+  size: 96, 192
+  orig: 96, 192
+  offset: 0, 0
+  index: -1

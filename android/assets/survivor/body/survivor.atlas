@@ -1,0 +1,118 @@
+
+survivor.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm
+  rotate: false
+  xy: 164, 164
+  size: 96, 64
+  orig: 96, 64
+  offset: 0, 0
+  index: -1
+backpack
+  rotate: false
+  xy: 2, 100
+  size: 160, 128
+  orig: 160, 128
+  offset: 0, 0
+  index: -1
+forearm
+  rotate: false
+  xy: 426, 422
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+hand_fist
+  rotate: false
+  xy: 262, 164
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+hand_flashlight
+  rotate: false
+  xy: 328, 228
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+hand_grab_ammo
+  rotate: false
+  xy: 426, 356
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+hand_hold_knife
+  rotate: false
+  xy: 328, 162
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+hand_holding_gun
+  rotate: false
+  xy: 426, 290
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+hand_steadying_gun
+  rotate: false
+  xy: 262, 98
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 2, 2
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+knife
+  rotate: true
+  xy: 100, 2
+  size: 96, 32
+  orig: 96, 32
+  offset: 0, 0
+  index: -1
+muzzle_flash_01
+  rotate: false
+  xy: 2, 230
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+pistol
+  rotate: false
+  xy: 164, 130
+  size: 96, 32
+  orig: 96, 32
+  offset: 0, 0
+  index: -1
+rifle
+  rotate: true
+  xy: 260, 230
+  size: 256, 32
+  orig: 256, 32
+  offset: 0, 0
+  index: -1
+shotgun
+  rotate: true
+  xy: 294, 230
+  size: 256, 32
+  orig: 256, 32
+  offset: 0, 0
+  index: -1
+torso
+  rotate: false
+  xy: 328, 294
+  size: 96, 192
+  orig: 96, 192
+  offset: 0, 0
+  index: -1
