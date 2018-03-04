@@ -50,14 +50,7 @@ class HeroEcs(val gamePlay : GameplayScreen) {
     }
 
     fun update(timeDelta : Float) {
-        //trySendLocalHeroState()
         engine.update(timeDelta)
-
-        val position = localHeroEntity?.getComponent(HeroWorldPositionComponent::class.java)
-        if(position == null)
-            return
-
-        //trySendLocalHeroState()
     }
 
     fun handleSvpActorSync(serverPacket : SvpActorSync) {
@@ -65,8 +58,6 @@ class HeroEcs(val gamePlay : GameplayScreen) {
             is SvpLocalHeroInit -> onSvpLocalHeroInit(serverPacket)
             is SvpAddHero -> onSvpOtherHero(serverPacket)
             is SvpHeroState -> onSvpHeroState(serverPacket)
-            //is SvpWeaponCommand -> onSvpWeaponCommand(serverPacket)
-        //is SvpOtherHeroInit -> onSvpOtherHero(serverPacket)
         }
     }
 
