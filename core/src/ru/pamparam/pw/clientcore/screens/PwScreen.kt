@@ -15,7 +15,8 @@ abstract class PwScreen : Screen {
     }
     val stage by lazy {
         val camera = OrthographicCamera()
-        camera.setToOrtho(false, 640f, 480f)
+        //camera.setToOrtho(false, 640f, 480f)
+        camera.setToOrtho(false)
         val viewport = FitViewport(640f, 480f, camera)
         val st = Stage (viewport, spriteBatch)
         st.setDebugAll(true)

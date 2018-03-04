@@ -9,8 +9,11 @@ import ru.pamparam.pw.packets.SvpActorSync
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea
 import com.badlogic.gdx.utils.Align
+import com.esotericsoftware.minlog.Log
 import ktx.scene2d.*
 import ru.pamparam.pw.clientcore.NetworkThread
 import ru.pamparam.pw.clientcore.PamparamWorld
@@ -20,8 +23,18 @@ import ru.pamparam.pw.packets.SvpServerQuantNumber
 
 
 class GameplayScreen : PwScreen() {
-    val heroEcs = HeroEcs(this)
-    val tiledMap = TiledMap(stage)
+    val heroEcs : HeroEcs
+    val tiledMap : TiledMap
+    val worldCamera : OrthographicCamera
+    val worldSpriteBatch : SpriteBatch
+
+    init {
+        worldCamera = OrthographicCamera()
+        worldSpriteBatch = SpriteBatch()
+
+        heroEcs = HeroEcs(this, worldCamera)
+        tiledMap = TiledMap(worldSpriteBatch)
+    }
 
     var serverQuantNumber = 0
         private set
@@ -51,7 +64,9 @@ class GameplayScreen : PwScreen() {
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        heroEcs.handleSvpActorSync(SvpLocalHeroInit())
+        worldCamera.setToOrtho(false, 640f, 320f)
+
+        heroEcs.handleSvpActorSync(SvpLocalHeroInit(0, 320f, 240f))
     }
 
     override fun handlePacket(packet: ServerPacket) {
@@ -66,10 +81,16 @@ class GameplayScreen : PwScreen() {
         Gdx.gl.glClearColor(0f, 0f,0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        tiledMap.draw(stage.camera as OrthographicCamera)
-        stage.batch.begin()
+        val heroPosition = heroEcs.getLocalHeroPosition()
+        worldCamera.position.set(heroPosition, 0f)
+
+        worldCamera.update()
+        tiledMap.draw(worldCamera)
+        worldSpriteBatch.projectionMatrix = worldCamera.combined
+
+        worldSpriteBatch.begin()
         heroEcs.update(delta)
-        stage.batch.end()
+        worldSpriteBatch.end()
         PamparamWorld.setDebug2("${Pw.network.getStatsAndFlush()}")
         stage.act(delta)
         stage.draw()

@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.EntityListener
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Vector2
 import com.esotericsoftware.minlog.Log
 import ru.pamparam.pw.clientcore.PamparamWorld
 import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
@@ -17,7 +19,7 @@ import ru.pamparam.pw.common.WeaponActionType
 import ru.pamparam.pw.packets.*
 
 
-class HeroEcs(val gamePlay : GameplayScreen) {
+class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamera) {
     private val engine : Engine
     private val localHeroRenderSystem: LocalHeroRenderSystem
     private val controllerSystemLocal: LocalHeroControllerSystem
@@ -25,7 +27,7 @@ class HeroEcs(val gamePlay : GameplayScreen) {
     private val networkRenderSystem : NetworkHeroRenderSystem
     private val mapHeroIdToEntity = mutableMapOf<Int, Entity>()
 
-    val localHeroController = PamparamWorld.platformResolver.CreateHeroController(gamePlay.stage)
+    val localHeroController = PamparamWorld.platformResolver.CreateHeroController(worldCamera)
     private var localHeroEntity : Entity? = null
 
     init {
@@ -127,6 +129,9 @@ class HeroEcs(val gamePlay : GameplayScreen) {
 
     fun getEntityByHeroId(heroId : Int) : Entity? {
         return mapHeroIdToEntity.get(heroId)
-
     }
+
+    fun getLocalHeroPosition() : Vector2 =
+        localHeroEntity?.getComponent(HeroWorldPositionComponent::class.java)?.toVector2() ?: Vector2(0f,0f)
+
 }

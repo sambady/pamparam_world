@@ -2,15 +2,17 @@ package ru.pamparam.pw.desktop
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ru.pamparam.pw.clientcore.IHeroController
 import ru.pamparam.pw.clientcore.PamparamWorld
 import ru.pamparam.pw.clientcore.normolizeAngle
 import ru.pamparam.pw.common.WeaponActionType
 
-class KeyboardHeroController(stage : Stage) : IHeroController(stage), InputProcessor {
+class KeyboardHeroController(camera : OrthographicCamera) : IHeroController(camera), InputProcessor {
     private var pressedW = false
     private var pressedS = false
     private var pressedA = false
@@ -49,8 +51,17 @@ class KeyboardHeroController(stage : Stage) : IHeroController(stage), InputProce
 
 
     override fun getLookRotation(position : Vector2) : Float {
-        val mouseWorldPosition = stage.screenToStageCoordinates(Vector2(mouseDirection))
 
+        val mouseWorldPosition = camera.unproject(Vector3(mouseDirection.x, mouseDirection.y, 0f))
+/*
+        val tmp = Vector3()
+        tmp.set(screenCoords.x, screenCoords.y, 1f)
+        camera.unproject(tmp, screenX.toFloat(), screenY.toFloat(), screenWidth.toFloat(), screenHeight.toFloat())
+        val c = camera as OrthographicCamera
+        c.view
+        val mouseWorldPosition = stage.screenToStageCoordinates(Vector2(mouseDirection))
+val st = Stage()
+        st.screenToStageCoordinates()*/
         var degrees = Math.atan2(
                 (mouseWorldPosition.y.toDouble() - position.y.toDouble()),
                 (mouseWorldPosition.x.toDouble() - position.x.toDouble())) * MathUtils.radiansToDegrees
@@ -99,22 +110,6 @@ class KeyboardHeroController(stage : Stage) : IHeroController(stage), InputProce
             Input.Keys.NUM_2 -> weaponCommand = WeaponActionType.selectPistol
             Input.Keys.NUM_3 -> weaponCommand = WeaponActionType.selectRifle
             Input.Keys.R -> weaponCommand = WeaponActionType.reload
-            Input.Keys.RIGHT -> {
-                stage.camera.translate(10f, 0f,0f)
-                stage.camera.update()
-            }
-            Input.Keys.LEFT -> {
-                stage.camera.translate(-10f, 0f, 0f)
-                stage.camera.update()
-            }
-            Input.Keys.UP -> {
-                stage.camera.translate(0f, 10f,0f)
-                stage.camera.update()
-            }
-            Input.Keys.DOWN -> {
-                stage.camera.translate(0f, -10f, 0f)
-                stage.camera.update()
-            }
         }
         return true
     }

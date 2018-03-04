@@ -83,8 +83,8 @@ class LocalHeroRenderSystem(val gameplay: GameplayScreen) : EntitySystem() {
     }
 
     private fun render(positionHero: HeroWorldPositionComponent, heroAnimation : HeroAnimationComponent) {
-        heroAnimation.legsAnimation.render(positionHero.toVector2(), positionHero.rotation, Gdx.graphics.deltaTime, gameplay.spriteBatch, skeletonRenderer)
-        heroAnimation.bodyAnimation.render(positionHero.toVector2(), positionHero.rotation, Gdx.graphics.deltaTime, gameplay.spriteBatch, skeletonRenderer)
+        heroAnimation.legsAnimation.render(positionHero.toVector2(), positionHero.rotation, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
+        heroAnimation.bodyAnimation.render(positionHero.toVector2(), positionHero.rotation, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
     }
 }
 
