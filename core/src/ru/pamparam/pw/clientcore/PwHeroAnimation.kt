@@ -17,7 +17,7 @@ class Box2dAttachment(name : String?) : RegionAttachment(name)
     var body : Body? = null
 }
 
-class MyAnimation {
+class PwHeroAnimation {
     val skeleton : Skeleton
     val animationState : AnimationState
     constructor(atlasFilename : String, skelFilename : String) {
