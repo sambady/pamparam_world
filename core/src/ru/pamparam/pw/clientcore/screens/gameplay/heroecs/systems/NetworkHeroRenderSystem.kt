@@ -3,6 +3,7 @@ package ru.pamparam.pw.clientcore.screens.gameplay.heroecs.systems
 import com.badlogic.ashley.core.*
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.Gdx
+import com.esotericsoftware.minlog.Log
 import com.esotericsoftware.spine.SkeletonRenderer
 import ru.pamparam.pw.clientcore.AnimationHelpers
 import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
@@ -15,7 +16,6 @@ class NetworkHeroRenderSystem(val gameplay: GameplayScreen) : EntitySystem() {
     private val positionMapper = ComponentMapper.getFor(HeroWorldPositionComponent::class.java)
     private val animationMapper = ComponentMapper.getFor(HeroAnimationComponent::class.java)
     private val weaponMapper = ComponentMapper.getFor(NetworkHeroWeaponComponent::class.java)
-
     private val skeletonRenderer = SkeletonRenderer()
 
     override fun addedToEngine(engine: Engine?) {
@@ -77,7 +77,7 @@ class NetworkHeroRenderSystem(val gameplay: GameplayScreen) : EntitySystem() {
 
 
     private fun render(positionHero: HeroWorldPositionComponent, heroAnimation : HeroAnimationComponent) {
-        heroAnimation.legsAnimation.render(positionHero.toVector2(), positionHero.rotation, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
-        heroAnimation.bodyAnimation.render(positionHero.toVector2(), positionHero.rotation, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
+        heroAnimation.legsAnimation.render(positionHero.toVector2(), positionHero.body.angle, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
+        heroAnimation.bodyAnimation.render(positionHero.toVector2(), positionHero.body.angle, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
     }
 }

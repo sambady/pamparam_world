@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.math.MathUtils
 import com.esotericsoftware.spine.SkeletonRenderer
 import ru.pamparam.pw.clientcore.AnimationHelpers
 import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
@@ -62,29 +63,29 @@ class LocalHeroRenderSystem(val gameplay: GameplayScreen) : EntitySystem() {
 
         if(weapon.actionId != animation.weaponActionId) {
             // Start new action
-            assert(weapon.currentWeaponAction != WeaponActionType.none) {
+            assert(weapon.action != WeaponActionType.none) {
                 "ActionType = ${WeaponActionType.none} for actionId ${weapon.actionId}"
             }
             animation.actionAnimation = animation.bodyAnimation.animationState.setAnimation(0,
-                    AnimationHelpers.getBodyWeaponActionAnimationString(weapon.currentWeaponType, weapon.currentWeaponAction),
+                    AnimationHelpers.getBodyWeaponActionAnimationString(weapon.weaponType, weapon.action),
                     false)
             animation.weaponActionId = weapon.actionId
         }
 
 
         if(animation.actionAnimation  == null){
-            if ((positionHero.runDestination != animation.runDestination) || (weapon.currentWeaponType != animation.weaponType)) {
-                animation.bodyAnimation.animationState.setAnimation(0, AnimationHelpers.getBodyLoopAnimationString(positionHero.runDestination, weapon.currentWeaponType), true)
+            if ((positionHero.runDestination != animation.runDestination) || (weapon.weaponType != animation.weaponType)) {
+                animation.bodyAnimation.animationState.setAnimation(0, AnimationHelpers.getBodyLoopAnimationString(positionHero.runDestination, weapon.weaponType), true)
             }
         }
 
-        animation.weaponType = weapon.currentWeaponType
+        animation.weaponType = weapon.weaponType
         animation.runDestination = positionHero.runDestination
     }
 
     private fun render(positionHero: HeroWorldPositionComponent, heroAnimation : HeroAnimationComponent) {
-        heroAnimation.legsAnimation.render(positionHero.toVector2(), positionHero.rotation, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
-        heroAnimation.bodyAnimation.render(positionHero.toVector2(), positionHero.rotation, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
+        heroAnimation.legsAnimation.render(positionHero.toVector2(), MathUtils.radiansToDegrees * positionHero.body.angle, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
+        heroAnimation.bodyAnimation.render(positionHero.toVector2(), MathUtils.radiansToDegrees * positionHero.body.angle, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
     }
 }
 

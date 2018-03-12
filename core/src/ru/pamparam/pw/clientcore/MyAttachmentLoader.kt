@@ -28,6 +28,7 @@ class MyAttachmentLoader(val atlas : TextureAtlas) : AttachmentLoader {
     override fun newRegionAttachment(skin: Skin?, name: String?, path: String?): RegionAttachment {
         val attachment = ru.pamparam.pw.clientcore.Box2dAttachment(name)
         val region = atlas.findRegion(attachment.name) ?: throw RuntimeException("Region not found in atlas: " + attachment)
+
         attachment.region = region
         return attachment
     }

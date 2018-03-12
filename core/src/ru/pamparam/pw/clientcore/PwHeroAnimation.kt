@@ -72,7 +72,7 @@ class PwHeroAnimation {
         skeleton.updateWorldTransform()
 
         skeletonRenderer.draw(batch, skeleton)
-        //val debug = SkeletonRendererDebug()
-        //debug.draw(skeleton)
+
+        //SkeletonRendererDebug().draw(skeleton)
     }
 }

@@ -3,6 +3,7 @@ package ru.pamparam.pw.clientcore.screens.gameplay.heroecs.systems
 import com.badlogic.ashley.core.*
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.math.MathUtils
 import com.esotericsoftware.minlog.Log
 import ru.pamparam.pw.clientcore.PositionHelpers
 import ru.pamparam.pw.clientcore.normolizeAngle
@@ -78,18 +79,16 @@ class NetworkControllerSystem(val gameplay: GameplayScreen) : EntitySystem() {
         if(state == null)
             return
 
-        positionHero.rotation = state.lookRotation
+        var rotation = state.lookRotation
         if(state.targetId != 0) {
             val targetPosition = gameplay.heroEcs.getEntityByHeroId(state.targetId)?.
                     getComponent(HeroWorldPositionComponent::class.java)?.toVector2()
-            positionHero.rotation = positionHero.toVector2().angle(targetPosition)
+            rotation = positionHero.toVector2().angle(targetPosition)
         }
 
-        positionHero.x = state.x
-        positionHero.y = state.y
-
+        positionHero.body.setTransform(state.x, state.y, MathUtils.degreesToRadians * state.lookRotation)
         positionHero.runDestination = when(state.isMove) {
-            true -> PositionHelpers.angleToRunDestination(normolizeAngle(state.moveRotation - positionHero.rotation))
+            true -> PositionHelpers.angleToRunDestination(normolizeAngle(state.moveRotation - rotation))
             false -> RunDest.IDLE
         }
 

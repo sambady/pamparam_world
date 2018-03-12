@@ -11,20 +11,19 @@ import com.esotericsoftware.minlog.Log
 import ru.pamparam.pw.clientcore.PamparamWorld
 import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
 import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.components.*
-import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.systems.LocalHeroControllerSystem
-import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.systems.LocalHeroRenderSystem
-import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.systems.NetworkControllerSystem
-import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.systems.NetworkHeroRenderSystem
+import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.systems.*
 import ru.pamparam.pw.common.WeaponActionType
 import ru.pamparam.pw.packets.*
 
 
 class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamera) {
-    private val engine : Engine
+    val engine : Engine
     private val localHeroRenderSystem: LocalHeroRenderSystem
     private val controllerSystemLocal: LocalHeroControllerSystem
     private val networkControllerSystem : NetworkControllerSystem
     private val networkRenderSystem : NetworkHeroRenderSystem
+    private val bulletSystem : BulletUpdateAndRenderSystem
+
     private val mapHeroIdToEntity = mutableMapOf<Int, Entity>()
 
     val localHeroController = PamparamWorld.platformResolver.CreateHeroController(worldCamera, gamePlay.stage)
@@ -36,10 +35,13 @@ class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamer
         controllerSystemLocal = LocalHeroControllerSystem(gamePlay)
         networkControllerSystem = NetworkControllerSystem(gamePlay)
         networkRenderSystem = NetworkHeroRenderSystem(gamePlay)
+        bulletSystem = BulletUpdateAndRenderSystem(gamePlay)
+
         engine.addSystem(localHeroRenderSystem)
         engine.addSystem(controllerSystemLocal)
         engine.addSystem(networkControllerSystem)
         engine.addSystem(networkRenderSystem)
+        engine.addSystem(bulletSystem)
         engine.addEntityListener(object : EntityListener {
             override fun entityAdded(entity: Entity) {
                 println("Entity added ${entity}")
@@ -68,7 +70,7 @@ class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamer
         val entity = Entity()
 
         entity.add(LocalHeroControllerComponent(localHeroController))
-        entity.add(HeroWorldPositionComponent(svpHeroInit.x, svpHeroInit.y, svpHeroInit.rotation))
+        entity.add(HeroWorldPositionComponent(gamePlay.box2dWorld, svpHeroInit.x, svpHeroInit.y, svpHeroInit.rotation, true, gamePlay.rayHandler))
         entity.add(HeroAnimationComponent())
         entity.add(LocalHeroWeaponComponent())
         entity.add(WeaponComponentLocalHeroActionQueue())
@@ -82,7 +84,7 @@ class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamer
         val entity = Entity()
 
         entity.add(NetworkHeroControllerComponent())
-        entity.add(HeroWorldPositionComponent(svpOtherHeroInit.x, svpOtherHeroInit.y, svpOtherHeroInit.rotation))
+        entity.add(HeroWorldPositionComponent(gamePlay.box2dWorld, svpOtherHeroInit.x, svpOtherHeroInit.y, svpOtherHeroInit.rotation, false, gamePlay.rayHandler))
         entity.add(HeroAnimationComponent())
         entity.add(NetworkHeroWeaponComponent())
         engine.addEntity(entity)

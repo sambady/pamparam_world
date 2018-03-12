@@ -102,6 +102,7 @@ project(":core") {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        compile group: 'com.badlogicgames.box2dlights', name: 'box2dlights', version: '1.4'
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile group: 'com.esotericsoftware.spine', name: 'spine-libgdx', version: '3.6.34.0'

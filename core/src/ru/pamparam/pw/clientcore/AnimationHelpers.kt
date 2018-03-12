@@ -1,8 +1,14 @@
 package ru.pamparam.pw.clientcore
 
+import com.badlogic.gdx.math.Vector2
+import com.esotericsoftware.minlog.Log
+import com.esotericsoftware.spine.Skeleton
+import com.esotericsoftware.spine.attachments.AttachmentType
+import com.esotericsoftware.spine.attachments.RegionAttachment
 import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.components.RunDest
 import ru.pamparam.pw.common.WeaponActionType
 import ru.pamparam.pw.common.WeaponType
+import java.util.*
 
 object AnimationHelpers {
     fun getBodyLoopAnimationString(runDest_: RunDest, weaponType_: WeaponType): String {
@@ -38,5 +44,16 @@ object AnimationHelpers {
                 } + "_" + weaponType_.animationName
             }
         }
+    }
+
+    fun getWeaponPositionAndDirection(skeleton : Skeleton) : Pair<Vector2, Float> {
+        val bone = skeleton.findBone("muzzle")
+        if(bone != null) {
+            val x = bone.worldX
+            val y = bone.worldY
+            Log.info("Position $x:$y ${bone.worldRotationX}")
+            return Pair(Vector2(x, y), bone.worldRotationX)
+        }
+        return Pair(Vector2(), 0f)
     }
 }

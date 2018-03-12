@@ -18,14 +18,14 @@ object PositionHelpers
     }
 
     fun speedFromRunDestination(runDestination : RunDest) = when (runDestination) {
-        RunDest.FRONT -> 2f
-        RunDest.FRONT_LEFT -> 2f
-        RunDest.FRONT_RIGHT -> 2f
-        RunDest.LEFT -> 2f
-        RunDest.RIGHT -> 2f
-        RunDest.BACK -> 1f
-        RunDest.BACK_LEFT -> 1f
-        RunDest.BACK_RIGHT -> 1f
+        RunDest.FRONT -> 200f
+        RunDest.FRONT_LEFT -> 200f
+        RunDest.FRONT_RIGHT -> 200f
+        RunDest.LEFT -> 200f
+        RunDest.RIGHT -> 200f
+        RunDest.BACK -> 50f
+        RunDest.BACK_LEFT -> 100f
+        RunDest.BACK_RIGHT -> 100f
         else -> 0f
     }
 }
