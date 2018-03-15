@@ -34,7 +34,7 @@ class NetworkThread(val packetsQueueToClient: PacketQueue<ServerPacket>) : Threa
 
             if(!connected) {
                 try {
-                    client.connect(5000, "192.168.10.60", 5756)
+                    client.connect(5000, "127.0.0.1", 57569)
                     Log.info("Connected")
                     connected = true
                 }
