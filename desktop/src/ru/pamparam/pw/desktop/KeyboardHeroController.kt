@@ -8,11 +8,11 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import ru.pamparam.pw.clientcore.IHeroController
-import ru.pamparam.pw.clientcore.PamparamWorld
 import ru.pamparam.pw.clientcore.normolizeAngle
+import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
 import ru.pamparam.pw.common.WeaponActionType
 
-class KeyboardHeroController(camera : OrthographicCamera, hudStage: Stage) : IHeroController(camera, hudStage), InputProcessor {
+class KeyboardHeroController(gamePlay : GameplayScreen) : IHeroController(gamePlay), InputProcessor {
     private var pressedW = false
     private var pressedS = false
     private var pressedA = false
@@ -52,7 +52,7 @@ class KeyboardHeroController(camera : OrthographicCamera, hudStage: Stage) : IHe
 
     override fun getLookRotation(position : Vector2) : Float {
 
-        val mouseWorldPosition = worldCamera.unproject(Vector3(mouseDirection.x, mouseDirection.y, 0f))
+        val mouseWorldPosition = gamePlay.worldCamera.unproject(Vector3(mouseDirection.x, mouseDirection.y, 0f))
 /*
         val tmp = Vector3()
         tmp.set(screenCoords.x, screenCoords.y, 1f)

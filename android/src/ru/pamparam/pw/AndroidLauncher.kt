@@ -4,15 +4,14 @@ import android.os.Bundle
 
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.scenes.scene2d.Stage
 import ru.pamparam.pw.clientcore.IHeroController
 import ru.pamparam.pw.clientcore.IPlatformResolver
 import ru.pamparam.pw.clientcore.PamparamWorld
+import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
 
 class PlatformResolverAndroid : IPlatformResolver {
-    override fun CreateHeroController(worldCamera : OrthographicCamera, hudStage: Stage): IHeroController
-            = TouchHeroController(worldCamera, hudStage)
+    override fun CreateHeroController(gamePlay: GameplayScreen): IHeroController
+            = TouchHeroController(gamePlay)
 }
 
 

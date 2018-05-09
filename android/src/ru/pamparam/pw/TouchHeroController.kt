@@ -1,26 +1,19 @@
 package ru.pamparam.pw
 
 import com.badlogic.gdx.InputProcessor
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Event
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.utils.Align
-import ktx.actors.onChange
 import ktx.scene2d.Scene2DSkin
-import ktx.scene2d.button
 import ktx.scene2d.table
-import ru.pamparam.pw.clientcore.IHeroController
+import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
 import ru.pamparam.pw.common.WeaponActionType
 import java.lang.Math.abs
 
-class TouchHeroController(worldCamera: OrthographicCamera, hudStage: Stage)
-    : ru.pamparam.pw.clientcore.IHeroController(worldCamera, hudStage), InputProcessor by hudStage
+class TouchHeroController(gamePlay: GameplayScreen)
+    : ru.pamparam.pw.clientcore.IHeroController(gamePlay), InputProcessor by gamePlay.stage
 {
     class StickerPosition(val x : Int = 0, val y : Int = 0)
     private var leftSticker : StickerPosition? = null

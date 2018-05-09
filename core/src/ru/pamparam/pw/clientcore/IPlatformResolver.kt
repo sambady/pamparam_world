@@ -1,8 +1,7 @@
 package ru.pamparam.pw.clientcore
 
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.scenes.scene2d.Stage
+import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
 
 interface IPlatformResolver {
-    fun CreateHeroController(worldCamera: OrthographicCamera, hudStage: Stage) : IHeroController
+    fun CreateHeroController(gamePlay: GameplayScreen) : IHeroController
 }

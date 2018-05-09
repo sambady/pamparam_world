@@ -1,12 +1,11 @@
 package ru.pamparam.pw.clientcore
 
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.Stage
+import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
 import ru.pamparam.pw.common.WeaponActionType
 
-abstract class IHeroController(val worldCamera : OrthographicCamera, val hudStage: Stage) {
+abstract class IHeroController(val gamePlay: GameplayScreen) {
     data class MoveInfo(val moveRotation: Float, val isMove: Boolean)
 
     abstract fun getMoveInfo() : MoveInfo
