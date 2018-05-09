@@ -40,7 +40,7 @@ class NetworkThread(val packetsToQueueToClient: PacketQueue<MessagePacketToClien
     override fun run() {
         RegisterAllPackets(server.kryo)
         server.start()
-        server.bind(5756)
+        server.bind(57569)
         server.addListener(clientSessions)
 
         while(isAlive) {
