@@ -20,13 +20,13 @@ class Box2dAttachment(name : String?) : RegionAttachment(name)
 class PwHeroAnimation {
     val skeleton : Skeleton
     val animationState : AnimationState
-    constructor(atlasFilename : String, skelFilename : String) {
+    constructor(worldPPM : Float, atlasFilename : String, skelFilename : String) {
         val atlas = TextureAtlas(atlasFilename)
 
         val atlasLoader = ru.pamparam.pw.clientcore.MyAttachmentLoader(atlas)
 
         val skeletonBinary = SkeletonJson(atlasLoader)
-        skeletonBinary.scale = 0.3f
+        skeletonBinary.scale = 1/5f/worldPPM
 
         val skeletonData = skeletonBinary.readSkeletonData(Gdx.files.internal(skelFilename))
         val animationData = AnimationStateData(skeletonData)

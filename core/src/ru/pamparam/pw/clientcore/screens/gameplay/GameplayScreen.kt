@@ -2,6 +2,7 @@ package ru.pamparam.pw.clientcore.screens.gameplay
 
 import box2dLight.PointLight
 import box2dLight.RayHandler
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import ru.pamparam.pw.packets.ServerPacket
@@ -19,61 +20,83 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.viewport.FillViewport
+import com.badlogic.gdx.utils.viewport.FitViewport
+import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.esotericsoftware.minlog.Log
 import ktx.scene2d.*
 import ru.pamparam.pw.clientcore.Pw
 import ru.pamparam.pw.clientcore.screens.PwScreen
 import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.HeroEcs
+import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.components.BodyUserData
+import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.components.BulletComponent
+import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.components.BulletUserData
 import ru.pamparam.pw.packets.SvpLocalHeroInit
 import ru.pamparam.pw.packets.SvpServerQuantNumber
 
-
-class Bullet(val position : Vector2, val direction : Vector2, var lifeTime : Float)
-{
-    init {
-        Log.info("PositionBullet ${position}")
-    }
-
-    val texture by lazy {
-        Texture("bullet.png")
-    }
-    fun UpdateAndDraw(delta : Float, batch: SpriteBatch) {
-        if(lifeTime > 0f) {
-            position.x += direction.x
-            position.y += direction.y
-            //Log.info("Draw ${position}")
-            val aff = Affine2()
-            aff.translate(position)
-            aff.rotate(direction.angle() + 90f)
-            val textureRegion = TextureRegion(texture)
-
-            batch.draw(textureRegion, texture.width.toFloat(), texture.height.toFloat(), aff)
-            lifeTime -= delta
-        }
-    }
-}
-
 class GameplayScreen : PwScreen() {
     val heroEcs : HeroEcs
-    val localHeroEcs : HeroEcs
     val box2dWorld : World
     val rayHandler : RayHandler
     val tiledMap : TiledMap
     val worldCamera : OrthographicCamera
     val worldSpriteBatch : SpriteBatch
+    //val worldViewport : FitViewport
+    val PPM = 20f
+
+    var bulletForDelete = mutableListOf<Entity>()
 
     init {
-        worldCamera = OrthographicCamera()
+        worldCamera = OrthographicCamera(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
         worldSpriteBatch = SpriteBatch()
+
+        World.setVelocityThreshold(10000f)
         box2dWorld = World(Vector2(0f, 0f), false)
+
+
         rayHandler = RayHandler(box2dWorld)
 
-
         heroEcs = HeroEcs(this, worldCamera)
-        localHeroEcs = HeroEcs(this, worldCamera)
         tiledMap = TiledMap(this, worldSpriteBatch)
 
         rayHandler.setAmbientLight(0f, 0f, 0f, 0.3f);
+
+        box2dWorld.setContactListener(object : ContactListener {
+            override fun endContact(contact: Contact?) {
+
+            }
+
+            override fun beginContact(contact: Contact?) {
+                if(contact == null)
+                    return
+                val userData = contact.fixtureA.body.userData
+                if( userData is BulletUserData) {
+                    bulletForDelete.add(userData.entity)
+
+                    val userDataHero = contact.fixtureB.body.userData
+                    if(userDataHero is BodyUserData) {
+                        Log.info("BOO")
+                    }
+                }
+                val userData2 = contact.fixtureB?.body?.userData
+                if( userData2 is BulletUserData) {
+                    bulletForDelete.add(userData2.entity)
+
+                    val userDataHero = contact.fixtureA.body.userData
+                    if(userDataHero is BodyUserData) {
+                        Log.info("BOO")
+                    }
+                }
+            }
+
+            override fun preSolve(contact: Contact?, oldManifold: Manifold?) {
+
+            }
+
+            override fun postSolve(contact: Contact?, impulse: ContactImpulse?) {
+
+            }
+        })
     }
 
     var serverQuantNumber = 0
@@ -104,20 +127,21 @@ class GameplayScreen : PwScreen() {
         inputMultiplexer.addProcessor(stage)
         Gdx.input.inputProcessor = inputMultiplexer
 
-        worldCamera.setToOrtho(false, 640f, 320f)
 
-        heroEcs.handleSvpActorSync(SvpLocalHeroInit(0, 320f, 240f))
+
+        worldCamera.setToOrtho(false, Gdx.graphics.width/1.5f/PPM, Gdx.graphics.height/1.5f/PPM)
+
+        heroEcs.handleSvpActorSync(SvpLocalHeroInit(0, Gdx.graphics.width/PPM/2f, Gdx.graphics.height/PPM/2f))
+
     }
 
     override fun handlePacket(packet: ServerPacket) {
         when(packet) {
             is SvpServerQuantNumber -> serverQuantNumber = packet.serverQuant
-            is SvpLocalHeroInit -> localHeroEcs.handleSvpActorSync(packet)
+            is SvpLocalHeroInit -> heroEcs.handleSvpActorSync(packet)
             is SvpActorSync -> heroEcs.handleSvpActorSync(packet)
         }
     }
-
-    var bullet : Bullet? = null
 
     val box2dDebugRenderer = Box2DDebugRenderer(true, true, true, true, true, true)
     override fun render(delta: Float) {
@@ -125,45 +149,30 @@ class GameplayScreen : PwScreen() {
         Gdx.gl.glClearColor(0f, 0f,0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
         val heroPosition = heroEcs.getLocalHeroPosition()
         worldCamera.position.set(heroPosition, 0f)
-
         worldCamera.update()
-        tiledMap.draw(worldCamera)
 
         worldSpriteBatch.projectionMatrix = worldCamera.combined
+        tiledMap.draw(worldCamera, worldSpriteBatch)
 
-        worldSpriteBatch.begin()
         heroEcs.update(delta)
-
-
+        worldSpriteBatch.begin()
+        heroEcs.draw(worldSpriteBatch)
         worldSpriteBatch.end()
-        box2dWorld.step(delta, 1, 1)
+        box2dWorld.step(1f/60f, 1, 1)
         rayHandler.setCombinedMatrix(worldCamera)
-        rayHandler.updateAndRender();
+        rayHandler.updateAndRender()
 
-
-
-        Pw.setDebug2("${Pw.network.getStatsAndFlush()}")
+        Pw.setDebug2("${heroPosition?.x} : ${heroPosition.y}")
         stage.act(delta)
         stage.draw()
 
-
-
-        worldSpriteBatch.begin()
-        localHeroEcs.update(delta)
-
-        bullet?.let {
-            //Log.info("Position: ${it.position}")
-            it.UpdateAndDraw(delta, worldSpriteBatch)
-            if(it.lifeTime < 0f) {
-                bullet = null
-            }
+        for(ent in bulletForDelete) {
+            ent.getComponent(BulletComponent::class.java)?.dispose()
+            heroEcs.engine.removeEntity(ent)
         }
-
-        worldSpriteBatch.end()
-
+        bulletForDelete.clear()
 
         val debugMatrix = Matrix4(worldCamera.combined)
         //box2dDebugRenderer.render(box2dWorld, debugMatrix)

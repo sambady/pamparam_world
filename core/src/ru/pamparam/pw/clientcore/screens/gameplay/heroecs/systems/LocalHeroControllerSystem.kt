@@ -14,7 +14,6 @@ import ru.pamparam.pw.clientcore.AnimationHelpers.getWeaponPositionAndDirection
 import ru.pamparam.pw.clientcore.PositionHelpers
 import ru.pamparam.pw.clientcore.Pw
 import ru.pamparam.pw.clientcore.normolizeAngle
-import ru.pamparam.pw.clientcore.screens.gameplay.Bullet
 import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
 import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.components.*
 import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.components.LocalHeroControllerComponent
@@ -58,7 +57,6 @@ class LocalHeroControllerSystem(val gameplay : GameplayScreen) : EntitySystem() 
             val animation = animationMapper.get(entity)
 
             try {
-
                 UpdatePosition(controller, position)
                 UpdateWeapon(deltaTime, controller, weapon, weaponActionQueue, position, animation)
                 //gameplay.box2dWorld.rayCast(object RayCastCallback {
@@ -169,15 +167,17 @@ class LocalHeroControllerSystem(val gameplay : GameplayScreen) : EntitySystem() 
                             return 1f
                         }
                     }, locatlHeroPosition.toVector2(), direction)
-
-
+                    val bodyUserData = closestFixture?.body?.userData
+                    if(bodyUserData is BodyUserData) {
+                        Log.info("Kill ${bodyUserData.entity.flags}")
+                    }
 
 
                     val (position, rotation) = AnimationHelpers.getWeaponPositionAndDirection(animationComponent.bodyAnimation.skeleton)
 
                     val entity = Entity()
-                    entity.add(BulletComponent(gameplay, position, rotation))
-                    gameplay.localHeroEcs.engine.addEntity(entity)
+                    entity.add(BulletComponent(gameplay, position, rotation, entity))
+                    gameplay.heroEcs.engine.addEntity(entity)
 
 
                     //Log.info("Point ${offset} position ${rotation}")

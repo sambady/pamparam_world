@@ -34,13 +34,6 @@ class BulletUpdateAndRenderSystem(val gameplay : GameplayScreen) : EntitySystem(
                 engine.removeEntity(entity)
                 continue
             }
-
-            val aff = Affine2()
-            aff.translate(bullet.body.position)
-            aff.rotate(bullet.body.angle * MathUtils.radiansToDegrees)
-            val textureRegion = TextureRegion(bullet.texture)
-
-            gameplay.worldSpriteBatch.draw(textureRegion, bullet.texture.width.toFloat(), bullet.texture.height.toFloat(), aff)
         }
     }
 

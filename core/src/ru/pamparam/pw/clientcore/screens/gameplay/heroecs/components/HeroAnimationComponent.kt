@@ -6,15 +6,15 @@ import ru.pamparam.pw.clientcore.AnimationHelpers
 import ru.pamparam.pw.clientcore.PwHeroAnimation
 import ru.pamparam.pw.common.WeaponType
 
-class HeroAnimationComponent() : Component
+class HeroAnimationComponent(worldPPM : Float) : Component
 {
     val bodyAnimation by lazy {
-        val animation = PwHeroAnimation("survivor/body/survivor.atlas", "survivor/body/survivor.json")
+        val animation = PwHeroAnimation(worldPPM,"survivor/body/survivor.atlas", "survivor/body/survivor.json")
         animation.animationState.setAnimation(0, AnimationHelpers.getBodyLoopAnimationString(runDestination, weaponType), true)
         animation
     }
     val legsAnimation by lazy {
-        val animation = PwHeroAnimation("survivor/legs/survivor.atlas", "survivor/legs/survivor.json")
+        val animation = PwHeroAnimation(worldPPM,"survivor/legs/survivor.atlas", "survivor/legs/survivor.json")
         animation.animationState.setAnimation(0, AnimationHelpers.getLegLoopAnimationString(runDestination), true)
         animation
     }

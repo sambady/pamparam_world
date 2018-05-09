@@ -17,15 +17,18 @@ object PositionHelpers
         else -> RunDest.IDLE
     }
 
-    fun speedFromRunDestination(runDestination : RunDest) = when (runDestination) {
-        RunDest.FRONT -> 200f
-        RunDest.FRONT_LEFT -> 200f
-        RunDest.FRONT_RIGHT -> 200f
-        RunDest.LEFT -> 200f
-        RunDest.RIGHT -> 200f
-        RunDest.BACK -> 50f
-        RunDest.BACK_LEFT -> 100f
-        RunDest.BACK_RIGHT -> 100f
-        else -> 0f
+    fun speedFromRunDestination(runDestination : RunDest) : Float {
+        var baseSpeed = 2f
+        return baseSpeed * when (runDestination) {
+            RunDest.FRONT -> 3f
+            RunDest.FRONT_LEFT -> 3f
+            RunDest.FRONT_RIGHT -> 3f
+            RunDest.LEFT -> 2f
+            RunDest.RIGHT -> 2f
+            RunDest.BACK -> 1f
+            RunDest.BACK_LEFT -> 1.5f
+            RunDest.BACK_RIGHT -> 1.5f
+            else -> 0f
+        }
     }
 }

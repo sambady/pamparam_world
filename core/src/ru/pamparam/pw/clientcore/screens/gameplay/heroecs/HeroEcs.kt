@@ -1,20 +1,22 @@
 package ru.pamparam.pw.clientcore.screens.gameplay.heroecs
 
-import com.badlogic.ashley.core.Engine
-import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.EntityListener
+import com.badlogic.ashley.core.*
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Affine2
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.esotericsoftware.minlog.Log
+import com.esotericsoftware.spine.SkeletonRenderer
 import ru.pamparam.pw.clientcore.PamparamWorld
 import ru.pamparam.pw.clientcore.screens.gameplay.GameplayScreen
 import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.components.*
 import ru.pamparam.pw.clientcore.screens.gameplay.heroecs.systems.*
 import ru.pamparam.pw.common.WeaponActionType
 import ru.pamparam.pw.packets.*
-
 
 class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamera) {
     val engine : Engine
@@ -57,6 +59,45 @@ class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamer
         engine.update(timeDelta)
     }
 
+    fun draw(batch: SpriteBatch) {
+        val positionMapper = ComponentMapper.getFor(HeroWorldPositionComponent::class.java)
+        val animationMapper = ComponentMapper.getFor(HeroAnimationComponent::class.java)
+
+        val entities = engine.getEntitiesFor(
+                Family.all(
+                        HeroWorldPositionComponent::class.java,
+                        HeroAnimationComponent::class.java
+                ).get()
+        )
+        val skeletonRenderer = SkeletonRenderer()
+        for(entity in entities) {
+            val position = positionMapper.get(entity)
+            val animation = animationMapper.get(entity)
+
+            animation.legsAnimation.render(position.toVector2(), MathUtils.radiansToDegrees * position.body.angle, Gdx.graphics.deltaTime, batch, skeletonRenderer)
+            animation.bodyAnimation.render(position.toVector2(), MathUtils.radiansToDegrees * position.body.angle, Gdx.graphics.deltaTime, batch, skeletonRenderer)
+        }
+
+        ///
+
+        val bulletMapper = ComponentMapper.getFor(BulletComponent::class.java)
+        val bulletEntities = engine.getEntitiesFor(
+                Family.all(
+                        BulletComponent::class.java
+                ).get()
+        )
+        for(entity in bulletEntities) {
+            val bullet = bulletMapper.get(entity)
+
+            val aff = Affine2()
+            aff.translate(bullet.body.position)
+            aff.rotate(bullet.body.angle * MathUtils.radiansToDegrees)
+            val textureRegion = TextureRegion(bullet.texture)
+
+            batch.draw(textureRegion, bullet.texture.width / gamePlay.PPM, bullet.texture.height / gamePlay.PPM, aff)
+        }
+    }
+
     fun handleSvpActorSync(serverPacket : SvpActorSync) {
         when(serverPacket) {
             is SvpLocalHeroInit -> onSvpLocalHeroInit(serverPacket)
@@ -70,8 +111,8 @@ class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamer
         val entity = Entity()
 
         entity.add(LocalHeroControllerComponent(localHeroController))
-        entity.add(HeroWorldPositionComponent(gamePlay.box2dWorld, svpHeroInit.x, svpHeroInit.y, svpHeroInit.rotation, true, gamePlay.rayHandler))
-        entity.add(HeroAnimationComponent())
+        entity.add(HeroWorldPositionComponent(gamePlay, svpHeroInit.x, svpHeroInit.y, svpHeroInit.rotation, true, entity))
+        entity.add(HeroAnimationComponent(gamePlay.PPM))
         entity.add(LocalHeroWeaponComponent())
         entity.add(WeaponComponentLocalHeroActionQueue())
         engine.addEntity(entity)
@@ -84,8 +125,8 @@ class HeroEcs(val gamePlay : GameplayScreen, val worldCamera : OrthographicCamer
         val entity = Entity()
 
         entity.add(NetworkHeroControllerComponent())
-        entity.add(HeroWorldPositionComponent(gamePlay.box2dWorld, svpOtherHeroInit.x, svpOtherHeroInit.y, svpOtherHeroInit.rotation, false, gamePlay.rayHandler))
-        entity.add(HeroAnimationComponent())
+        entity.add(HeroWorldPositionComponent(gamePlay, svpOtherHeroInit.x, svpOtherHeroInit.y, svpOtherHeroInit.rotation, false, entity))
+        entity.add(HeroAnimationComponent(gamePlay.PPM))
         entity.add(NetworkHeroWeaponComponent())
         engine.addEntity(entity)
         mapHeroIdToEntity[svpOtherHeroInit.heroId] = entity

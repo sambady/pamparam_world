@@ -84,8 +84,8 @@ class LocalHeroRenderSystem(val gameplay: GameplayScreen) : EntitySystem() {
     }
 
     private fun render(positionHero: HeroWorldPositionComponent, heroAnimation : HeroAnimationComponent) {
-        heroAnimation.legsAnimation.render(positionHero.toVector2(), MathUtils.radiansToDegrees * positionHero.body.angle, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
-        heroAnimation.bodyAnimation.render(positionHero.toVector2(), MathUtils.radiansToDegrees * positionHero.body.angle, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
+        //heroAnimation.legsAnimation.render(positionHero.toVector2(), MathUtils.radiansToDegrees * positionHero.body.angle, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
+        //heroAnimation.bodyAnimation.render(positionHero.toVector2(), MathUtils.radiansToDegrees * positionHero.body.angle, Gdx.graphics.deltaTime, gameplay.worldSpriteBatch, skeletonRenderer)
     }
 }
 
